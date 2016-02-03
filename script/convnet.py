@@ -1,9 +1,20 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
+import numpy as np
+
+DATA = 'data/'
+
+mean_pixel = np.zeros((1, 1, 1, 3))
+mean_pixel[1,1,1,:] = [103.939, 116.779, 123.68]
+
+X = np.load(DATA+'X.npy')
+X = X - mean_pixel
+X = np.reshape(X, (-1,3,128,128))
+y = np.load(DATA+'y.npy')
 
 model = Sequential()
 # input: 100x100 images with 3 channels -> (3, 100, 100) tensors.
@@ -24,7 +35,11 @@ model.add(Dropout(0.25))
 
 model.add(Flatten())
 # Note: Keras does automatic shape inference.
-model.add(Dense(256))
+model.add(Dense(1024))
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+
+model.add(Dense(1024))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
 
@@ -34,4 +49,6 @@ model.add(Activation('softmax'))
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd)
 
-model.fit(X_train, Y_train, batch_size=32, nb_epoch=1)
+model.fit(X, y, batch_size=32, nb_epoch=1)
+
+model.save_weights(DATA+'weights.h5')
