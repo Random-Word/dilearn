@@ -25,7 +25,7 @@ def index2arr(s):
 
 def proc_img(fname):
     path = TRAINING+str(fname)[0]+'/'+str(fname)+'.jpg'
-    return(cv2.resize(cv2.imread(path),(224,224)))
+    return(cv2.resize(cv2.imread(path),(128,128)))
 
 p = multiprocessing.Pool(multiprocessing.cpu_count())
 
@@ -33,7 +33,7 @@ labels = pd.read_csv(DATA+'train.csv')
 imgmap = pd.read_csv(DATA+'train_photo_to_biz_ids.csv')
 labels = labels.merge(imgmap, on='business_id')
 
-X = np.zeros((N_IMGS,224,224,3))
+X = np.zeros((N_IMGS,128,128,3))
 y = np.vstack(labels[:N_IMGS]['labels'].apply(index2arr).values)
 
 futures = list()
