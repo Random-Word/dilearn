@@ -33,7 +33,7 @@ requests==2.2.1
 scipy==0.17.0
 six==1.10.0
 ssh-import-id==3.21
-tensorflow==0.5.0
+tensorflow==2.7.2
 urllib3==1.7.1
 wheel==0.24.0
 wsgiref==0.1.2
